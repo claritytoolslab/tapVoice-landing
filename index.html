@@ -554,9 +554,14 @@
                 padding: 0 16px;
             }
 
+            .hero {
+                min-height: 90vh;
+                padding: 2rem 0;
+            }
+
             .hero-content {
                 grid-template-columns: 1fr;
-                gap: 3rem;
+                gap: 2rem;
                 text-align: center;
             }
 
@@ -570,6 +575,22 @@
 
             .email-form {
                 flex-direction: column;
+            }
+
+            .hero-phones {
+                gap: 1rem;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-screenshot {
+                max-width: 200px;
+                border-radius: 20px;
+            }
+
+            .hero-watch-screenshot {
+                max-width: 140px;
+                border-radius: 12px;
             }
 
             .comparison-container {
@@ -634,6 +655,44 @@
 
         .benefit-card:nth-child(3) {
             animation-delay: 0.4s;
+        }
+
+        /* Extra small mobile screens */
+        @media (max-width: 480px) {
+            .hero {
+                min-height: 85vh;
+                padding: 1.5rem 0;
+            }
+
+            .hero-content {
+                gap: 1.5rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+                line-height: 1.2;
+            }
+
+            .hero-text .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-screenshot {
+                max-width: 180px;
+            }
+
+            .hero-watch-screenshot {
+                max-width: 120px;
+            }
+
+            .carousel-container {
+                height: 400px;
+            }
+
+            .demo-screenshot {
+                max-width: 240px;
+                max-height: 300px;
+            }
         }
     </style>
 </head>
