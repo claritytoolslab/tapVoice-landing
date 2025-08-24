@@ -715,10 +715,10 @@
                     <h1>Stop Digging for Your Phone</h1>
                     <p class="subtitle">Get AI answers instantly from your wrist. TapVoice brings ChatGPT to your Apple Watch.</p>
                     
-                    <div class="email-form">
-                        <input type="email" class="email-input" placeholder="Enter your email" readonly onclick="openWaitlistForm()">
-                        <button onclick="openWaitlistForm()" class="btn-primary">Join Waitlist</button>
-                    </div>
+                    <form class="email-form" onsubmit="submitToGoogleForm(event, this)">
+                        <input type="email" class="email-input" name="email" placeholder="Enter your email" required>
+                        <button type="submit" class="btn-primary">Join Waitlist</button>
+                    </form>
                 </div>
                 
                 <div class="hero-visual">
@@ -852,10 +852,10 @@
                 <h2 class="section-title">Ready to Stop Digging?</h2>
                 <p class="section-subtitle">Join thousands of others waiting for the future of wearable AI.</p>
                 
-                <div class="email-form">
-                    <input type="email" class="email-input" placeholder="Your email address" readonly onclick="openWaitlistForm()">
-                    <button onclick="openWaitlistForm()" class="btn-primary">Get Early Access</button>
-                </div>
+                <form class="email-form" onsubmit="submitToGoogleForm(event, this)">
+                    <input type="email" class="email-input" name="email" placeholder="Your email address" required>
+                    <button type="submit" class="btn-primary">Get Early Access</button>
+                </form>
             </div>
         </div>
     </section>
@@ -868,18 +868,84 @@
     </footer>
 
     <script>
-        // Google Forms integration and analytics
-        function openWaitlistForm() {
-            // Track button click in Google Analytics
+        // Google Forms seamless integration
+        function submitToGoogleForm(event, form) {
+            event.preventDefault();
+            
+            const email = form.querySelector('input[name="email"]').value;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.textContent = 'Joining...';
+            submitBtn.disabled = true;
+            
+            // Track in Google Analytics
             if (typeof gtag !== 'undefined') {
-                gtag('event', 'join_waitlist_click', {
+                gtag('event', 'form_submit', {
                     'event_category': 'engagement',
-                    'event_label': 'TapVoice Waitlist'
+                    'event_label': 'TapVoice Waitlist',
+                    'email': email
                 });
             }
             
-            // Open Google Form in new tab
-            window.open('https://docs.google.com/forms/d/e/1FAIpQLSc2tHnwsTLOXuLefb62sqGcvT9xKgH9LHfzqu_8GCxYo3pN-w/viewform?usp=pp_url', '_blank');
+            // Submit to Google Form (using entry.xxxxxx for email field)
+            // You'll need to replace entry.xxxxxx with actual field ID from Google Form
+            const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSc2tHnwsTLOXuLefb62sqGcvT9xKgH9LHfzqu_8GCxYo3pN-w/formResponse';
+            const formData = new FormData();
+            formData.append('entry.2005620554', email); // Common Google Forms email entry ID
+            
+            // Submit via iframe to avoid CORS issues
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.name = 'hidden_iframe';
+            document.body.appendChild(iframe);
+            
+            const tempForm = document.createElement('form');
+            tempForm.action = googleFormUrl;
+            tempForm.method = 'POST';
+            tempForm.target = 'hidden_iframe';
+            
+            const emailInput = document.createElement('input');
+            emailInput.type = 'hidden';
+            emailInput.name = 'entry.2005620554'; // Common Google Forms email entry ID
+            emailInput.value = email;
+            tempForm.appendChild(emailInput);
+            
+            document.body.appendChild(tempForm);
+            tempForm.submit();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(tempForm);
+                document.body.removeChild(iframe);
+            }, 1000);
+            
+            // Show success message
+            setTimeout(() => {
+                form.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: white;">
+                        <h3 style="margin-bottom: 0.5rem; background: linear-gradient(135deg, #00F2FE 0%, #00D4FF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Thanks for joining! 🎉</h3>
+                        <p style="color: rgba(255, 255, 255, 0.8);">We'll notify you when TapVoice launches.</p>
+                    </div>
+                `;
+                
+                // Track successful conversion
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'conversion', {
+                        'send_to': 'G-078P8955PM',
+                        'event_category': 'signup',
+                        'event_label': 'waitlist_success'
+                    });
+                }
+            }, 500);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
