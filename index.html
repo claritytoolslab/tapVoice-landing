@@ -9,9 +9,9 @@
     
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --primary-gradient: linear-gradient(135deg, #001a1f 0%, #003d47 100%);
+            --secondary-gradient: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+            --accent-gradient: linear-gradient(135deg, #00F2FE 0%, #00D4FF 100%);
             --text-primary: #1d1d1f;
             --text-secondary: #86868b;
             --glass-bg: rgba(255, 255, 255, 0.1);
@@ -156,6 +156,32 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .hero-phones {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-end;
+        }
+
+        .phone-screenshot {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .watch-screenshot {
+            animation: float 6s ease-in-out infinite 0.5s;
+        }
+
+        .hero-screenshot {
+            max-width: 280px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+        }
+
+        .hero-watch-screenshot {
+            max-width: 180px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
         }
 
         /* Apple Watch Mockup */
@@ -366,37 +392,140 @@
             line-height: 1.6;
         }
 
+        /* Social Proof Section */
+        .social-proof-section {
+            padding: 6rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         /* Demo Section */
         .demo-section {
             padding: 8rem 0;
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .demo-placeholder {
+        .demo-carousel {
+            margin-top: 3rem;
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
-            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border: 1px solid var(--glass-border);
             border-radius: var(--border-radius);
-            padding: 4rem 2rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        .carousel-container {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .carousel-slide.active {
+            left: 0;
+            transform: translateX(0);
+        }
+
+        .demo-screenshot {
+            max-width: 280px;
+            max-height: 350px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .slide-caption {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 600;
             text-align: center;
-            margin-top: 3rem;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-btn {
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
             transition: var(--transition);
         }
 
-        .demo-placeholder:hover {
-            border-color: rgba(255, 255, 255, 0.5);
+        .carousel-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-light);
         }
 
-        .placeholder-text {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
+        .carousel-dots {
+            display: flex;
+            gap: 0.5rem;
         }
 
-        .placeholder-note {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            font-style: italic;
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dot.active {
+            background: var(--accent-gradient);
+            transform: scale(1.2);
         }
 
         /* CTA Section */
@@ -526,22 +655,13 @@
                 </div>
                 
                 <div class="hero-visual">
-                    <div class="watch-container">
-                        <div class="watch-band-top"></div>
-                        <div class="watch-body">
-                            <div class="watch-screen">
-                                <div class="app-icon">🎤</div>
-                                <div class="watch-text">
-                                    "What's the weather?"<br>
-                                    <br>
-                                    Currently 22°C and sunny<br>
-                                    in Helsinki. Perfect for<br>
-                                    a walk! 🌤️
-                                </div>
-                            </div>
-                            <div class="watch-crown"></div>
+                    <div class="hero-phones">
+                        <div class="phone-screenshot">
+                            <img src="2CFCD7CB-05DC-4B03-BF8F-91EF9E0645C7.png" alt="TapVoice iPhone Dashboard" class="hero-screenshot">
                         </div>
-                        <div class="watch-band-bottom"></div>
+                        <div class="watch-screenshot">
+                            <img src="421D04EC-9DFE-4CDC-AF34-B4C2F301B03B.png" alt="TapVoice Apple Watch" class="hero-watch-screenshot">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -574,25 +694,45 @@
     <section class="benefits-section">
         <div class="container">
             <h2 class="section-title">Why TapVoice?</h2>
-            <p class="section-subtitle">Three game-changing benefits that will transform how you access information.</p>
+            <p class="section-subtitle">Real features that thousands of users love about TapVoice.</p>
             
             <div class="benefits-grid">
                 <div class="benefit-card glass-card">
-                    <div class="benefit-icon">⚡</div>
-                    <h3 class="benefit-title">Instant Answers</h3>
-                    <p class="benefit-desc">No more fumbling for your phone. Get immediate responses to any question with just a tap and your voice.</p>
+                    <div class="benefit-icon">🗣️</div>
+                    <h3 class="benefit-title">9 Languages Supported</h3>
+                    <p class="benefit-desc">Ask questions in English, Spanish, German, French, and more. TapVoice understands and responds in your language.</p>
                 </div>
                 
                 <div class="benefit-card glass-card">
-                    <div class="benefit-icon">🙌</div>
-                    <h3 class="benefit-title">Hands-Free</h3>
-                    <p class="benefit-desc">Perfect for cooking, exercising, driving, or any time your hands are busy but your mind needs answers.</p>
+                    <div class="benefit-icon">📱</div>
+                    <h3 class="benefit-title">Question History</h3>
+                    <p class="benefit-desc">All your conversations are saved and searchable. Review past answers anytime on both Watch and iPhone.</p>
                 </div>
                 
                 <div class="benefit-card glass-card">
-                    <div class="benefit-icon">🔄</div>
-                    <h3 class="benefit-title">Always Accessible</h3>
-                    <p class="benefit-desc">Your personal AI assistant is always just a wrist raise away. No more dead batteries or misplaced phones.</p>
+                    <div class="benefit-icon">🎭</div>
+                    <h3 class="benefit-title">Enhanced Voice Quality</h3>
+                    <p class="benefit-desc">Premium voice synthesis with natural-sounding responses. Karen Enhanced voice provides the best audio experience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="social-proof-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card glass-card">
+                    <div class="stat-number">1800</div>
+                    <div class="stat-label">Questions/Month on Max Plan</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Languages Supported</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-number">Enhanced</div>
+                    <div class="stat-label">Voice Quality Available</div>
                 </div>
             </div>
         </div>
@@ -602,12 +742,38 @@
     <section class="demo-section">
         <div class="container">
             <h2 class="section-title">See TapVoice in Action</h2>
-            <p class="section-subtitle">Watch how simple it is to get AI answers on your Apple Watch.</p>
+            <p class="section-subtitle">Real screenshots from the TapVoice Apple Watch app.</p>
             
-            <!-- Placeholder for Demo Video/GIF -->
-            <div class="demo-placeholder">
-                <div class="placeholder-text">📹 Demo Video Coming Soon</div>
-                <div class="placeholder-note">This section is ready for your demo video or interactive content</div>
+            <!-- Real App Screenshots Carousel -->
+            <div class="demo-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active">
+                        <img src="0CC0684B-FA9A-4659-A63E-1BBF8064B4A1.png" alt="TapVoice Listening" class="demo-screenshot">
+                        <div class="slide-caption">Voice Recognition in Action</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="8E3F1FC5-84B2-4246-A2B9-54E69111CD1D.png" alt="TapVoice Sending" class="demo-screenshot">
+                        <div class="slide-caption">Processing Your Question</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="78D1E69E-E6E1-47BD-93D0-E8C48D1A887A.png" alt="TapVoice Response" class="demo-screenshot">
+                        <div class="slide-caption">Instant AI Answers</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="C448A7A5-F745-4B8B-B564-0E29D9C6419B.png" alt="TapVoice Ask Interface" class="demo-screenshot">
+                        <div class="slide-caption">Clean Interface</div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-btn prev">&larr;</button>
+                    <div class="carousel-dots">
+                        <span class="dot active" data-slide="0"></span>
+                        <span class="dot" data-slide="1"></span>
+                        <span class="dot" data-slide="2"></span>
+                        <span class="dot" data-slide="3"></span>
+                    </div>
+                    <button class="carousel-btn next">&rarr;</button>
+                </div>
             </div>
         </div>
     </section>
@@ -700,8 +866,51 @@
                 });
             }, observerOptions);
             
+            // Carousel functionality
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.dot');
+            const nextBtn = document.querySelector('.carousel-btn.next');
+            const prevBtn = document.querySelector('.carousel-btn.prev');
+            
+            function showSlide(n) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                if (n >= slides.length) currentSlide = 0;
+                if (n < 0) currentSlide = slides.length - 1;
+                
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }
+            
+            function nextSlide() {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+            
+            function prevSlide() {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+            
+            if (nextBtn && prevBtn) {
+                nextBtn.addEventListener('click', nextSlide);
+                prevBtn.addEventListener('click', prevSlide);
+            }
+            
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentSlide = index;
+                    showSlide(currentSlide);
+                });
+            });
+            
+            // Auto-advance carousel every 5 seconds
+            setInterval(nextSlide, 5000);
+            
             // Observe elements for scroll animations
-            document.querySelectorAll('.benefit-card, .comparison-card, .demo-placeholder').forEach(el => {
+            document.querySelectorAll('.benefit-card, .comparison-card, .demo-carousel').forEach(el => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(30px)';
                 el.style.transition = 'all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)';
