@@ -872,26 +872,54 @@
 
     <script>
         // Supabase integration - unlimited email collection!
-        const { createClient } = supabase;
-        const supabaseUrl = 'https://bsquedrvsjspvnbetgss.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzcXVlZHJ2c2pzcHZuYmV0Z3NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTA0ODMsImV4cCI6MjA3MDI4NjQ4M30.9pcZrnIKi85Dgc28rwO1FLX2qcbKbc0r-UfYUkim8ns';
-        const _supabase = createClient(supabaseUrl, supabaseKey);
-
+        let _supabase = null;
+        
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing Supabase...');
+            
+            // Initialize Supabase
+            const initSupabase = () => {
+                if (typeof supabase !== 'undefined') {
+                    const { createClient } = supabase;
+                    const supabaseUrl = 'https://bsquedrvsjspvnbetgss.supabase.co';
+                    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzcXVlZHJ2c2pzcHZuYmV0Z3NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTA0ODMsImV4cCI6MjA3MDI4NjQ4M30.9pcZrnIKi85Dgc28rwO1FLX2qcbKbc0r-UfYUkim8ns';
+                    _supabase = createClient(supabaseUrl, supabaseKey);
+                    console.log('✅ Supabase initialized successfully');
+                } else {
+                    console.warn('Supabase library not yet loaded, retrying...');
+                    setTimeout(initSupabase, 100);
+                }
+            };
+            
+            initSupabase();
+            
+            // Setup forms
             const forms = document.querySelectorAll('.email-form');
+            console.log('Found forms:', forms.length);
             
             forms.forEach(form => {
                 form.addEventListener('submit', async function(e) {
                     e.preventDefault();
+                    console.log('🚀 Form submitted!');
                     
                     const submitBtn = form.querySelector('button[type="submit"]');
                     const emailInput = form.querySelector('input[name="email"]');
                     const email = emailInput.value;
                     const originalBtnText = submitBtn.textContent;
                     
+                    console.log('📧 Email:', email, 'Form:', form.name);
+                    
+                    // Check if Supabase is ready
+                    if (!_supabase) {
+                        console.error('❌ Supabase not initialized');
+                        alert('Please wait a moment and try again.');
+                        return;
+                    }
+                    
                     // Validate email
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailRegex.test(email)) {
+                        console.error('❌ Invalid email format');
                         alert('Please enter a valid email address.');
                         return;
                     }
@@ -899,6 +927,7 @@
                     // Show loading state
                     submitBtn.textContent = 'Joining...';
                     submitBtn.disabled = true;
+                    console.log('⏳ Submitting to Supabase...');
                     
                     try {
                         // Insert into Supabase
@@ -911,7 +940,11 @@
                                 }
                             ]);
                         
+                        console.log('📤 Supabase response:', { data, error });
+                        
                         if (error) throw error;
+                        
+                        console.log('✅ Email saved successfully!');
                         
                         // Track successful submission
                         if (typeof gtag !== 'undefined') {
