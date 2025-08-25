@@ -17,6 +17,9 @@
       gtag('config', 'G-078P8955PM');
     </script>
     
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #001a1f 0%, #003d47 100%);
@@ -715,7 +718,7 @@
                     <h1>Stop Digging for Your Phone</h1>
                     <p class="subtitle">Get AI answers instantly from your wrist. TapVoice brings ChatGPT to your Apple Watch.</p>
                     
-                    <form class="email-form" name="waitlist" method="POST" netlify>
+                    <form class="email-form" name="waitlist">
                         <input type="email" class="email-input" name="email" placeholder="Enter your email" required>
                         <button type="submit" class="btn-primary">Join Waitlist</button>
                     </form>
@@ -852,7 +855,7 @@
                 <h2 class="section-title">Ready to Stop Digging?</h2>
                 <p class="section-subtitle">Join thousands of others waiting for the future of wearable AI.</p>
                 
-                <form class="email-form" name="early-access" method="POST" netlify>
+                <form class="email-form" name="early-access">
                     <input type="email" class="email-input" name="email" placeholder="Your email address" required>
                     <button type="submit" class="btn-primary">Get Early Access</button>
                 </form>
@@ -868,29 +871,72 @@
     </footer>
 
     <script>
-        // Simple Netlify Forms integration - much more reliable!
+        // Supabase integration - unlimited email collection!
+        const { createClient } = supabase;
+        const supabaseUrl = 'https://bsquedrvsjspvnbetgss.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzcXVlZHJ2c2pzcHZuYmV0Z3NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTA0ODMsImV4cCI6MjA3MDI4NjQ4M30.9pcZrnIKi85Dgc28rwO1FLX2qcbKbc0r-UfYUkim8ns';
+        const _supabase = createClient(supabaseUrl, supabaseKey);
+
         document.addEventListener('DOMContentLoaded', function() {
-            const forms = document.querySelectorAll('form[netlify]');
+            const forms = document.querySelectorAll('.email-form');
             
             forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
                     const submitBtn = form.querySelector('button[type="submit"]');
-                    const email = form.querySelector('input[name="email"]').value;
+                    const emailInput = form.querySelector('input[name="email"]');
+                    const email = emailInput.value;
+                    const originalBtnText = submitBtn.textContent;
+                    
+                    // Validate email
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        alert('Please enter a valid email address.');
+                        return;
+                    }
                     
                     // Show loading state
                     submitBtn.textContent = 'Joining...';
                     submitBtn.disabled = true;
                     
-                    // Track form submission in Google Analytics
-                    if (typeof gtag !== 'undefined') {
-                        gtag('event', 'form_submit', {
-                            'event_category': 'engagement',
-                            'event_label': 'TapVoice Waitlist - ' + (form.name || 'signup')
-                        });
+                    try {
+                        // Insert into Supabase
+                        const { data, error } = await _supabase
+                            .from('waitlist_emails')
+                            .insert([
+                                { 
+                                    email: email, 
+                                    form_name: form.name || 'unknown'
+                                }
+                            ]);
+                        
+                        if (error) throw error;
+                        
+                        // Track successful submission
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'form_submit', {
+                                'event_category': 'engagement',
+                                'event_label': 'TapVoice Waitlist - ' + (form.name || 'signup')
+                            });
+                        }
+                        
+                        // Show success message with same styling as before
+                        form.innerHTML = `
+                            <div style="text-align: center; padding: 2rem; color: white;">
+                                <h3 style="margin-bottom: 0.5rem; background: linear-gradient(135deg, #00F2FE 0%, #00D4FF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Thanks for joining! 🎉</h3>
+                                <p style="color: rgba(255, 255, 255, 0.8);">We'll notify you when TapVoice launches.</p>
+                            </div>
+                        `;
+                        
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Something went wrong. Please try again.');
+                        
+                        // Reset button
+                        submitBtn.textContent = originalBtnText;
+                        submitBtn.disabled = false;
                     }
-                    
-                    // Netlify will handle the form submission and redirect to success page
-                    // Much simpler and more reliable than Google Forms!
                 });
             });
         });
